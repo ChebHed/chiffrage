@@ -1,0 +1,47 @@
+Objectifs
+Consolider les acquis sur le langage Java.
+Introduction
+Dans ce chapitre vous allez développer une application complète qui reprend tout partie de ce que nous avons vu dans ce cours, même si une grande partie de l'application est orientée sous-programmes et gestion des collections.
+L'application consiste à crypter et décrypter un texte selon la méthode du "Chiffrage de césar" (http://www.cryptage.org/chiffre-cesar.html). Il s'agit bien évidemment plus d'un prétexte que d'une réalisation opérationnelle. L'objectif est de comprendre une problématique, d'en planifier les différentes étapes et enfin de la coder en utilisant au plus et au mieux le découpage en procédures et fonctions.
+Chiffrage de César
+La version du Chiffrage de César que vous allez développer est basée sur l'utilisation d'une clé de cryptage dont chacun des caractères servira de vecteur de décalage. Voici un exemple :
+Texte à crypter : 	ABCDEF
+Clé : 	QSD
+Texte crypté : 	ÆÒÇÒӳè
+Méthodologie
+Pour passer de A à Æ via le caractère Q, on additionne leur code ASCII :
+Code ASCII de A : 65
+Code ASCII de Q : 81
+Code ASCII résultat : 146 ce qui donne le caractère : Æ
+Donc si on reprend pour l'ensemble des caractères, cela donne ceci :
+Texte source	A	B	C	D	E	F
+Code ASCII	65	66	67	68	69	70
+Clé	Q	S	D	Q	S	D
+Code ASCII	81	83	68	81	83	68
+Somme	146	149	135	149	152	138
+Texte crypté	Æ	Ò	Ç	Ò	ӳ	è
+On remarquera au passage que lorsqu'on est arrivé à la dernière lettre de la clé, on repasse à la première.
+Le code ASCII est un code allant de 0 à 255. Que se passerait-il si l'addition de deux codes dépassait ces 255 ? Exemple :
+Code ASCII de è : 138
+Code ASCII de z : 122
+Code ASCII résultat : 260
+Le problème c'est qu'il n'y a pas de code ASCII 260 ! Alors comment fait-on ? Eh bien on procède comme pour la clé, on repart du début ! Pour cela il suffit de retrancher 255 à la somme obtenue, ce qui dans notre cas donnerait le code ASCII 5 qui se traduirait par le caractère ENQ qui est en fait un caractère non affichable comme le sont tous les caractères situés entre le code 0 et le code 31, le premier code affichable étant le 32 qui est l'espace.
+Note : le décryptage procède du système inverse, à savoir une soustraction au lieu d'une addition des codes ASCII.
+Aide
+Pour développer l'application vous aurez besoin de fonctionnalités java qui n'ont pas été étudiées mais qui sont assez faciles à la fois à comprendre et à utiliser.
+Gestion des fichiers
+Il n'y a pas qu'une seule façon d'accéder aux fichiers, nous opterons pour celle qui consiste à charger (pour la lecture) toutes les lignes d'un fichier dans une collection de String. Une ligne est constituée de l'ensemble des caractères situés entre un début de fichier et un saut de ligne, ou entre deux sauts de ligne ou entre un saut de ligne et une fin de fichier.
+Lire un fichier
+        BufferedReader source;
+        String ligne;
+        List<String> lignes = new ArrayList<String>();
+        source = new BufferedReader(new FileReader(nomFichier));
+        ligne = source.readLine();
+        while (ligne != null) {
+            lignes.add(ligne);
+            ligne = source.readLine();
+        }
+        source.close();
+La variable nomFichier contient le chemin et le nom du fichier texte, exemple : c:/users/usio/Toto/monfichier.txt.
+Attention : le séparateur de dossier est bien le / et non le \ !
+Il ne reste plus qu'à exploiter la collection lignes.
